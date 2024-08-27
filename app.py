@@ -64,7 +64,7 @@ retriever = ContextualCompressionRetriever(
 )
 
 # Load the prompt from LangChain Hub
-rag_prompt = hub.pull("rlm/rag-prompt")
+rag_prompt = hub.pull("rlm/rag-prompt", api_key=st.secrets['LANGCHAIN_API_KEY'])
 
 # Define the LCEL chain
 chain = (
