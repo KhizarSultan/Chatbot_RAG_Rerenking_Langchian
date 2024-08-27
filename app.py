@@ -10,10 +10,6 @@ from langchain.schema.output_parser import StrOutputParser
 from langchain import hub
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import CohereRerank
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Load and process the website content
 @st.cache_resource
@@ -29,7 +25,8 @@ def load_and_process_website():
     texts = text_splitter.split_documents(documents)
     embeddings = CohereEmbeddings(
         model="embed-english-v3.0",
-        user_agent="ColeMcintosh.io Q&A"
+        user_agent="ColeMcintosh.io Q&A",
+        cohere_api_key=st.secrets['COHERE_API_KEY']
     )
     
     vectorstore = FAISS.from_documents(texts, embeddings)
@@ -49,7 +46,7 @@ st.markdown("---")
 vectorstore = load_and_process_website()
 
 # Initialize ChatGroq model
-llm = ChatGroq(model_name="llama-3.1-8b-instant")
+llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=st.secrets['GROQ_API_KEY'])
 
 # Define the base retriever
 base_retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
@@ -58,6 +55,7 @@ base_retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
 compressor = CohereRerank(
     model="rerank-english-v3.0",
     top_n=5,
+    cohere_api_key=st.secrets['COHERE_API_KEY']
 )
 # Create the contextual compression retriever
 retriever = ContextualCompressionRetriever(
