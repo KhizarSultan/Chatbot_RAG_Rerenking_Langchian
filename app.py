@@ -11,6 +11,8 @@ from langchain import hub
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import CohereRerank
 
+st.set_page_config(page_title="Cole McIntosh RAG", page_icon="🌐")
+
 # Load and process the website content
 @st.cache_resource
 def load_and_process_website():
